@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo Client</title>
+</head>
+<body>
+<h1>Demo Client</h1>
+<div id="login" style="display: none">
+    <form name="login">
+        <fieldset>
+            <legend>Login Form</legend>
+            <input name="username" placeholder="UserId"><br>
+            <input type="password" name="password" placeholder="Password"><br>
+            <input type="submit" value="Login">
+        </fieldset>
+    </form>
+</div>
+<div id="hello" style="display: none">
+    <p style="font-size: x-large;"></p>
+    <button>Hello</button>
+</div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var app = new App();
+        app.load();
+    });
+
+    var App = function () {
+        this.token = null;
+        this.loginForm = document.forms['login'];
+        this.loginForm.onsubmit = this.login.bind(this);
+        this.loginDiv = document.getElementById('login');
+        this.helloDiv = document.getElementById('hello');
+        var button = this.helloDiv.querySelector('button');
+        button.onclick = this.hello.bind(this);
+    };
+
+    App.prototype.load = function () {
+        if (this.token) {
+            this.showHello();
+        } else {
+            this.showLoginForm();
+        }
+    };
+
+    App.prototype.login = function (evt) {
+        evt.preventDefault();
+        console.log(this.loginForm);
+        var username = this.loginForm.username.value;
+        var password = this.loginForm.password.value;
+
+        axios
+            .post('/token', {}, {
+                auth: { // Basic Authentication
+                    username: username,
+                    password: password
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(function (res) {
+                this.token = res.headers['x-auth-token'];
+                this.load();
+            }.bind(this))
+            .catch(function (err) {
+                if (err.response.status === 401) {
+                    alert('Authentication failed!!');
+                } else {
+                    alert(err.message);
+                }
+            }.bind(this));
+    };
+
+    App.prototype.showLoginForm = function () {
+        this.loginDiv.style.display = 'block';
+        this.helloDiv.style.display = 'none';
+    };
+
+    App.prototype.showHello = function () {
+        this.loginDiv.style.display = 'none';
+        this.helloDiv.style.display = 'block';
+    };
+
+    App.prototype.hello = function () {
+        var p = this.helloDiv.querySelector('p');
+        p.innerText = '⏳';
+        axios
+            .get('/hello', {
+                headers: {
+                    'x-auth-token': this.token,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(function (res) {
+                p.innerText = res.data;
+            }.bind(this))
+            .catch(function (err) {
+                alert(err.message);
+            }.bind(this));
+    }
+</script>
+</html>

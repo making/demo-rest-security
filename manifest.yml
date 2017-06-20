@@ -1,0 +1,6 @@
+applications:
+- name: demo-rest-security
+  buildpack: java_buildpack
+  path: target/demo-0.0.1-SNAPSHOT.jar
+  services:
+  - session-db # cf create-service cleardb spark session-db
