@@ -48,7 +48,6 @@
 
     App.prototype.login = function (evt) {
         evt.preventDefault();
-        console.log(this.loginForm);
         var username = this.loginForm.username.value;
         var password = this.loginForm.password.value;
 
@@ -100,6 +99,8 @@
             }.bind(this))
             .catch(function (err) {
                 alert(err.message);
+                this.token = null;
+                this.load();
             }.bind(this));
     }
 </script>
