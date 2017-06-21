@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Endpoint to generate tokens
+ * Endpoint which generates tokens
  */
 @RestController
 public class TokenController {

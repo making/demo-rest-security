@@ -15,7 +15,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and() //
 				.httpBasic() //
 				.and() //
-				.csrf().disable() // use CookieCsrfTokenRepository.withHttpOnlyFalse()
+				.csrf().disable() // TODO use CookieCsrfTokenRepository.withHttpOnlyFalse()
 				.exceptionHandling() // To prevent popup when basic authentication fails
 		;
 	}
